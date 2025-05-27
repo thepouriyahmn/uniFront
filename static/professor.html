@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table border="1" id="myTable">
+        <thead>
+            <tr>
+                <th>student</th>
+                <th>lesson</th>
+                <th>class</th>
+                <th>time</th>
+                <th>action</th>
+              
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <table border="2" id="MyTable1">
+        <thead>
+            <tr>
+                <th>student</th>
+                <th>lesson</th>
+                <th>class</th>
+                <th>time</th>
+                <th>mark</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</body>
+<script>
+window.onload=function(){
+    enterStudentMark()
+    showStudents()
+}
+async function showStudents() {
+    let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+    let getStudent = await fetch("http://188.121.110.43:9001/showStudentForProfessor",{
+        headers: {
+                "Authorization": `Bearer ${token}`
+            }
+    })
+    
+
+
+    if (!getStudent.ok){
+    if (getStudent.status===401) {
+        window.location.href = "http://188.121.110.43:9000/unauthorized"
+   
+   
+} else {
+    
+    alert("شما استاد نیستید")
+     window.location.href = "http://188.121.110.43:9000/forbidden"
+} 
+    }
+
+
+
+
+
+
+
+
+
+    
+    let res = await getStudent.json()
+    console.log(res)
+    res.forEach(item => addrows(item,"MyTable1"));
+}
+
+async function enterStudentMark() {
+    let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+    let getStudent = await fetch("http://188.121.110.43:9001/showStudentForProfessor",{
+        headers: {
+                "Authorization": `Bearer ${token}`
+            }
+    })
+
+    if (!getStudent.ok){
+    if (getStudent.status===401) {
+
+        window.location.href = "http://188.121.110.43:9000/unauthorized"
+       
+  
+  
+  
+
+} else {
+    alert("something went wrong")
+     window.location.href = "http://188.121.110.43:9000"
+}
+}
+
+
+
+
+    let res = await getStudent.json()
+    res.forEach(item => addrows(item,"myTable"));
+}
+function addrows(param, tag) {
+    let table = document.getElementById(tag).getElementsByTagName('tbody')[0];
+    let newRow = table.insertRow();
+
+    let cell1 = newRow.insertCell(0);
+    let cell2 = newRow.insertCell(1);
+    let cell3 = newRow.insertCell(2);
+    let cell4 = newRow.insertCell(3);
+    let cell5 = newRow.insertCell(4);
+console.log("tname is: ", param.tname)
+    cell1.innerHTML = param.tname;
+    cell2.innerHTML = param.name;
+    cell3.innerHTML = param.class;
+    cell4.innerHTML = param.time;
+
+    if (tag == "MyTable1") {
+        cell5.innerHTML = param.mark;
+        return
+        // نمایش نمره فقط
+        // if (param.mark !== undefined && param.mark !== null) {
+        //     cell5.innerText = param.mark;
+        // } else {
+        //     cell5.innerText = "بدون نمره";
+        // }
+
+        // let deleteButton = document.createElement("button");
+        // deleteButton.innerText = "delete";
+        // deleteButton.onclick = async function () {
+        //     let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+        //     let del = await fetch("http://localhost:9001/delMark", {
+        //         method: "POST",
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             "Authorization": `Bearer ${token}`
+        //         },
+        //         body: JSON.stringify({ id: param.id })
+        //     });
+
+        //     if (del.status === 401) {
+        //         alert("access denied, please login");
+        //         window.location.href = "http://localhost:9000";
+        //         return;
+        //     }
+        //     if (!del.ok) {
+        //         alert("something went wrong!");
+        //         window.location.href = "http://localhost:9000";
+        //         return;
+        //     }
+        //     table.deleteRow(newRow.rowIndex - 1);
+        // };
+
+        // cell5.appendChild(deleteButton);
+        
+    }
+
+    // برای افزودن نمره توسط استاد
+    let markInput = document.createElement("input");
+    markInput.type = "number";
+    markInput.min = 0;
+    markInput.max = 20;
+    markInput.placeholder = "نمره";
+    markInput.style.marginRight = "5px";
+
+    let addButton = document.createElement("button");
+    addButton.innerText = "add";
+    addButton.onclick = async function () {
+        let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+        let markValue = parseInt(markInput.value);
+
+        if (markValue === "") {
+            alert("لطفاً نمره را وارد کنید");
+            return;
+        }
+
+        let response = await fetch("http://188.121.110.43:9001/addMark", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                id: param.id,
+                classId: param.classId,
+                mark: markValue
+            })
+        });
+
+        if (response.status === 401) {
+            alert("access denied, please login");
+            window.location.href = "http://188.121.110.43:9000";
+            return;
+        }
+
+        if (!response.ok) {
+            alert("خطا در ارسال نمره");
+            return;
+        }
+
+        alert("نمره با موفقیت ثبت شد");
+        // می‌تونی اینجا جدول رو ریفرش کنی یا فقط cell5 رو آپدیت کنی
+    };
+
+    cell5.appendChild(markInput);
+    cell5.appendChild(addButton);
+}
+
+// function addrows(param,tag) {
+//     let table = document.getElementById(tag).getElementsByTagName('tbody')[0];
+//     let newRow = table.insertRow();
+
+//     let cell1 = newRow.insertCell(0);
+//     let cell2 = newRow.insertCell(1);
+//     let cell3 = newRow.insertCell(2);
+//     let cell4 = newRow.insertCell(3);
+//     let cell5 = newRow.insertCell(4);
+//     let cell6 = newRow.insertCell(5);
+    
+
+//     cell1.innerHTML = param.tname;
+//     cell2.innerHTML = param.name;
+//     cell3.innerHTML = param.class;
+//     cell4.innerHTML = param.time;
+
+   
+//     if(tag=="MyTable1"){
+     
+//         console.log("mark is: " , param.mark) //but here is nothing, why???/
+//         let addButton = document.createElement("button");
+
+//     addButton.innerText = "delete";
+//     addButton.onclick = async function () {
+
+//         let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+//         let del = await fetch("http://localhost:9001/delMark", {
+//             method: "POST",
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 "Authorization": `Bearer ${token}`
+//             },
+//             body: JSON.stringify({ id: param.id })
+//         });
+
+//         if (del.status === 401) {
+//             alert("access denied, please login");
+//             window.location.href = "http://localhost:9000";
+//             return;
+//         }
+//         if (!del.ok) {
+//             alert("something went wrong!");
+//             window.location.href = "http://localhost:9000";
+//             return;
+//         }
+//         table.deleteRow(newRow.rowIndex -1);
+//     };
+
+//     cell5.appendChild(addButton);
+//     return
+//     }
+  
+//     let input = document.createElement("input");
+//     let addButton = document.createElement("button");
+//     // addButton.innerText = "mark";
+//     addButton.onclick = async function () {
+//         console.log(param.id)
+//         let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+//         let add = await fetch("http://localhost:9001/addMark", {
+//             method: "POST",
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 "Authorization": `Bearer ${token}`
+//             },
+//             body: JSON.stringify({ id: param.id, mark: param.mark })
+//         });
+
+//         if (add.status === 401) {
+//             alert("access denied, please login");
+//             window.location.href = "http://localhost:9000";
+//             return;
+//         }
+//         if (!add.ok) {
+//             alert("something went wrong!");
+//             window.location.href = "http://localhost:9000";
+//             return;
+//         }
+//     };
+
+//     cell5.appendChild(addButton);
+// }
+</script>
+</html>

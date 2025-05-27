@@ -1,0 +1,99 @@
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="static/css/signUp.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+</head>
+<body>
+    
+    <input type="text" id="username" placeholder="username">
+    <input type="password" id="password" placeholder="password">
+    <h6>رمز شما باید حداقل 6 حرف باشد</h6>
+    <h6>رمز شما تنها و الزاما باید از حروف بزرگ و کوچک و شماره تشکیل شده باشد</h6>
+
+    <h3>نقش‌ها:</h3>
+
+    <label>
+      <input type="checkbox" id="studentCheckbox">
+ دانش‌آموز
+    </label><br>
+    
+    <label>
+      <input type="checkbox" id="professorCheckbox">
+      استاد
+    </label><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <button onclick=signUp()>sign up</button>
+</body>
+<script>
+    async function signUp() {
+        const studentSelected = document.getElementById("studentCheckbox").checked;
+        const professorSelected = document.getElementById("professorCheckbox").checked;
+      let data={
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value,
+            studentRole: studentSelected,
+            professorRole:  professorSelected
+        }
+
+        console.log(data.username, "username"
+            , data.role
+        )
+        let giveData = await fetch("http://188.121.110.43:9001/signup" , {
+            method: "POST", 
+            headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+            
+        })
+        const regex = /^[a-zA-Z0-9]{6,}$/;
+      
+        if(!regex.test(data.password)){
+            alert("از رمز قوی تر استفاده کنید");
+            return
+        }
+        // if (giveData.ok){
+        // window.location.href = "http://localhost:9000";
+        // } else {
+        //     let errorText = await response.text(); // مثلا "Username already exists"
+        //     alert("Signup failed: " + errorText);
+        // }
+        if (giveData.status === 409) {
+    let errorText = await giveData.text();
+    alert("Signup failed: " + errorText);
+}
+else if(giveData.status === 400){
+    alert("از رمز قوی تر استفاده کنید");
+} else if (giveData.ok) {
+    alert("Signup successful!");
+    window.location.href = "http://188.121.110.43:9000/loginPage";
+} else {
+    alert("Unexpected error: " + giveData.status);
+}
+        
+
+    }
+</script>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="static/css/daneshjo.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>انتخاب واحد</title>
+</head>
+<body>
+   
+    <table border="1" id="myTable">
+        <thead>
+            <tr>
+                <th>unit</th>
+                <th>name</th>
+                <th>professor</th>
+                <th>class number</th>
+                <th>capacity</th>
+                <th>date</th>
+                <th>action</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <table border="2" id="MyTable1">
+        <thead>
+            <tr>
+                <th>unit</th>
+                <th>name</th>
+                <th>professor</th>
+                <th>class number</th>
+                <th>capacity</th>
+                <th>date</th>
+                <th>mark</th>
+                <th>action</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <button onclick= uploadData()>show units</button>
+</body>
+<script>
+window.onload = function(){
+    onloaded()
+}
+async function onloaded(){
+    let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+let getData = await fetch("http://188.121.110.43:9001/showUnits", {
+headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        }
+)
+console.log(getData.status, "is status")
+if (!getData.ok){
+    if (getData.status===401) {
+        alert("دسترسی ندارید لطفا ابتدا وارد شوید")
+    window.location.href = "http://188.121.110.43:9000/unauthorized"
+} else {
+    alert("شما دانشجو نیستید")
+     window.location.href = "http://188.121.110.43:9000/forbidden"
+}
+
+
+// let response = await getData.json()
+
+
+// response.forEach(item => addrows(item,"myTable"));
+
+
+    
+    
+
+       
+  
+
+   
+
+
+
+
+
+}
+let response = await getData.json()
+
+
+response.forEach(item => addrows(item,"myTable"));
+}
+
+let isTableLoaded = false
+
+async function uploadData() {
+    let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+    let response = await fetch("http://188.121.110.43:9001/pickedUnits",{
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    }
+    )
+    if (response.status === 401) {
+        alert("دسترسی ندارید! لطفاً وارد شوید.");
+        window.location.href = "http://188.121.110.43:9000/unauthorized";
+        return;
+    }
+
+    if (!response.ok) {
+        alert("خطایی رخ داده");
+        window.location.href = "http://188.121.110.43:9000";
+        return;
+    }
+    let res = await response.json();
+    console.log("here: " , res)
+    console.log("here2: ", res.leftCapacity)
+    console.log("here2: ", res.Capacity)
+  
+    let table = document.getElementById("MyTable1").getElementsByTagName('tbody')[0];
+if (isTableLoaded==false) {
+    
+        res.forEach(r => {  
+           addrows(r,"MyTable1")
+    });
+} else{
+table.innerHTML=""
+res.forEach(r=>{addrows(r,"MyTable1")} )
+}
+
+    
+    
+
+       
+  
+
+   
+
+
+
+
+isTableLoaded = true;
+}
+
+
+        
+
+
+
+
+
+function addrows(param,tag) {
+    let table = document.getElementById(tag).getElementsByTagName('tbody')[0];
+    let newRow = table.insertRow();
+
+    let cell1 = newRow.insertCell(0);
+    let cell2 = newRow.insertCell(1);
+    let cell3 = newRow.insertCell(2);
+    let cell4 = newRow.insertCell(3);
+    let cell5 = newRow.insertCell(4);
+    let cell6 = newRow.insertCell(5);
+    let cell7 = newRow.insertCell(6);
+    let cell8 = newRow.insertCell(7);
+    
+
+    cell1.innerHTML = param.unit;
+    cell2.innerHTML = param.name;
+    cell3.innerHTML = param.tname;
+    cell4.innerHTML = param.class;
+    cell5.innerHTML = param.leftCapacity;
+    if (param.leftCapacity==-1) {
+        cell5.innerHTML = 0
+    }
+    cell6.innerHTML = param.time;
+   
+    if(tag=="MyTable1"){
+    if (param.mark===null) {
+        cell7.innerHTML = "no mark yet" 
+    } else{
+        cell7.innerHTML = param.mark
+    }
+        //cell7.innerHTML = "hello";
+        
+        console.log("mark is: " , param.mark) //but here is nothing, why???/
+        let addButton = document.createElement("button");
+
+    addButton.innerText = "delete";
+    addButton.onclick = async function () {
+
+        let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+        let del = await fetch("http://188.121.110.43:9001/delStudentUnit", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ id: param.id })
+        });
+
+        if (del.status === 401) {
+            alert("access denied, please login");
+            window.location.href = "http://188.121.110.43:9000";
+            return;
+        }
+        if (!del.ok) {
+            alert("something went wrong!");
+            window.location.href = "http://188.121.110.43:9000";
+            return;
+        }
+        table.deleteRow(newRow.rowIndex -1);
+    };
+
+    cell8.appendChild(addButton);
+    return
+    }
+  
+    let addButton = document.createElement("button");
+    addButton.innerText = "add";
+    addButton.onclick = async function () {
+        console.log(param.id)
+        let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+        let add = await fetch("hhttp://188.121.110.43:9001/add", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ id: param.id })
+        });
+
+        if (add.status === 401) {
+            alert("access denied, please login");
+            window.location.href = "http://188.121.110.43:9000";
+            return;
+        }
+        if (!add.ok) {
+            alert("something went wrong!");
+            window.location.href = "http://188.121.110.43:9000";
+            return;
+        }
+    };
+
+    cell7.appendChild(addButton);
+}
+
+</script>
+</html>

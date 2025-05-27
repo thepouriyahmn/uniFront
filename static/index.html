@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اموزشیار</title>
+</head>
+<body>
+   
+    <form id="form" >
+        <!-- <h3>unit:</h3><input type="text" id="unit"> -->
+         <h3>professor</h3>
+        <select id="professorDropdown"></select>
+        <h3>lesson</h3>
+       <select id="lessonDropdown"></select>
+      <h3>class_number:</h3>  <input type="number" id="class">
+      <h3>capacity:</h3>  <input type="number" id="capacity">
+      <h3>time:</h3>  <input type="text" id="time">
+        <input type="submit">
+    </form>
+    
+    <button onclick="uploadData()">
+        show the lessons
+    </button>
+    <table border="1" id="myTable">
+        <thead>
+            <tr>
+                <th>unit</th> 
+                <th>name</th>
+                <th>professor</th>
+                <th>class</th>
+                <th>capacity</th>
+                <th>date</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <button onclick=go()>تنظیم اساتید و دروس</button>
+    
+</body>
+<script>
+function go() {
+    window.location.href = "http://188.121.110.43:9000/permission"
+}
+// window.onload = function () {
+//     checkToken();
+// };
+
+// async function checkToken() {
+//     let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+//     console.log("Token sent:", token);
+
+//     try {
+//         let response = await fetch('http://localhost:9001/show', {
+//             headers: {
+//                 "Authorization": `Bearer ${token}`
+//             }
+//         });
+
+//         if (!response.ok) {
+//             if (response.status === 401) {
+             
+          
+//               window.location.href = "http://localhost:9000/unauthorized"
+//                 return;
+//             } else if (response.status === 403){
+//                 window.location.href = "http://localhost:9000/forbidden"
+//             }
+//         } else {
+//             console.log("Access authorized ✅");
+           
+//         }
+
+//     } catch (err) {
+//         console.error("Fetch error:", err);
+//         alert("Connection error or server is down.");
+//     }
+// }
+ 
+    
+
+    //submit button
+    window.onload = function(){
+        onloaded()
+    }
+
+    async function onloaded() {
+        let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+        let getData = await fetch("http://188.121.110.43:9001/showProfessors",{
+            headers: {
+                 "Authorization": `Bearer ${token}`
+            }
+        })
+        if (!getData.ok){
+    if (getData.status===401) {
+        
+    window.location.href = "http://188.121.110.43:9000/unauthorized"
+    alert("ابتدا وارد شوید");
+  
+
+} else {
+    alert("something went wrong")
+     window.location.href = "http://188.121.110.43:9000"
+}
+}
+
+        
+        let res = await getData.json();
+        res.forEach(r=>{dropDown(r,"professorDropdown")})
+        let getLesson = await fetch("http://188.121.110.43:9001/showLesson",{
+            headers: {
+                 "Authorization": `Bearer ${token}`
+            }
+        })
+        let res2 = await getLesson.json();
+        res2.forEach(r2=>{dropDown(r2,"lessonDropdown")})
+        
+    }
+    function dropDown(param,tag) {
+        var dropdown = document.getElementById(tag);
+        var option = document.createElement("option");
+        if (tag=="professorDropdown"){
+        
+      option.value = param.id;
+      option.textContent = param.name;
+      dropdown.appendChild(option);
+      console.log("the name is : ", param.name)
+        } else {
+            option.value = param.id;
+      option.textContent = param.lessonName;
+      dropdown.appendChild(option);
+      console.log("the name is : ", param.lessonName)
+        }
+    } 
+
+//     const selectedLesson = lessonDropDown.options[lessonDropDown.selectedIndex];
+// const selectedProfessor = professorDropDown.options[professorDropDown.selectedIndex];
+
+// const lessonText = selectedLesson ? selectedLesson.text : "";
+// const professorText = selectedProfessor ? selectedProfessor.text : "";
+
+    const professorDropDown = document.getElementById("professorDropdown");
+    const lessonDropDown = document.getElementById("lessonDropdown");
+  document.getElementById("form").addEventListener("submit", function (event) {
+    event.preventDefault();
+    // console.log("lesson name is: ", lessonDropDown.options[professorDropDown.selectedIndex].text)
+    const data = {
+        // unit: parseInt(document.getElementById("unit").value),
+        
+        name: lessonDropDown.options[lessonDropDown.selectedIndex].text,
+        tname: professorDropDown.options[professorDropDown.selectedIndex].text,
+        class: parseInt(document.getElementById("class").value),
+        capacity: parseInt(document.getElementById("capacity").value),
+        time: document.getElementById("time").value
+       
+    };
+async function submit() {
+try{
+    let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+    let response = await fetch("http://188.121.110.43:9001/submit", {
+        method: 'POST', 
+        headers: {
+            'Content-Type': 'application/json' ,
+             "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(data) 
+    })
+    if (!response.ok){
+    if (response.status===401) {
+        alert("زمان شما منقضی شده است لطفا دوباره وارد شوید")
+    window.location.href = "http://188.121.110.43:9000"
+} else {
+    alert("something went wrong")
+     window.location.href = "http://188.121.110.43:9000"
+}
+    }
+    let result = await response.json()
+
+    if (result.name) {
+          
+   addrows(result)
+    
+} else {
+    document.getElementById("response").innerText = "No data returned.";
+}
+
+}
+catch(error)
+{
+console.log(error)
+}
+
+  
+    
+
+}
+submit()
+
+
+
+
+            
+
+
+});
+
+let isTableLoaded = false
+async function uploadData() {
+    let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+    let response = await fetch("http://188.121.110.43:9001/show",{
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    }
+    )
+    if (response.status === 401) {
+        alert("زمان شما منقضی شده است لطفاً وارد شوید.");
+        window.location.href = "http://188.121.110.43:9000";
+        return;
+    }
+
+    if (!response.ok) {
+        alert("خطایی رخ داده");
+        return;
+    }
+    let res = await response.json();
+  console.log("res is: ", res)
+    let table = document.getElementById("myTable").getElementsByTagName('tbody')[0];
+if (isTableLoaded==false) {
+    
+        res.forEach(r => {  
+           addrows(r)
+    });
+} else{
+table.innerHTML=""
+console.log(res.id) 
+res.forEach(r=>{addrows(r)} )
+}
+
+    
+    
+
+       
+  
+
+   
+
+
+
+
+isTableLoaded = true;
+}
+function addrows(param){
+        let table = document.getElementById("myTable").getElementsByTagName('tbody')[0];
+        let newRow = table.insertRow();
+            let cell1 = newRow.insertCell(0);
+            let cell2 = newRow.insertCell(1);
+            let cell3 = newRow.insertCell(2);
+            let cell4 = newRow.insertCell(3);
+            let cell5 = newRow.insertCell(4);
+            let cell6 = newRow.insertCell(5);
+            let cell7 = newRow.insertCell(6);
+            
+            cell1.innerHTML = param.unit;
+            cell2.innerHTML = param.name;
+            cell3.innerHTML = param.tname;
+            cell4.innerHTML = param.class;
+            cell5.innerHTML = param.capacity;
+            cell6.innerHTML = param.time;
+            console.log(param.id)  
+            let deleteButton = document.createElement("button")
+          deleteButton.innerText = "delete"
+            deleteButton.onclick = async function  (){
+                table.deleteRow(newRow.rowIndex -1);
+                let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+let deleter = await fetch("http://188.121.110.43:9001/delete",{
+    method : "POST",
+    headers: {
+            'Content-Type': 'application/json' ,
+            "Authorization": `Bearer ${token}`
+        },
+        
+        body: JSON.stringify({id: param.id} )
+        
+
+}
+
+
+)
+if(deleter.status===401){
+    alert("access denied, please login")
+    window.location.href = "http://188.121.110.43:9000";
+    return
+}
+if (!deleter.ok){
+    alert("someting went wrong!")
+    window.location.href = "http://188.121.110.43:9000";
+    return
+}
+       
+    }
+    cell7.appendChild(deleteButton)
+}
+    // function deleteButton(params) {
+    //     let table = document.getElementById("myTable").getElementsByTagName('tbody')[0];
+    //     let newRow = table.insertRow()
+    //     table.deleteRow(newRow.rowIndex -1);
+    // }
+
+
+</script>
+</html>
