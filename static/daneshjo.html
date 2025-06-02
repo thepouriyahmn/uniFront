@@ -217,7 +217,7 @@ function addrows(param,tag) {
     addButton.onclick = async function () {
         console.log(param.id)
         let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-        let add = await fetch("hhttp://188.121.110.43:9001/add", {
+        let add = await fetch("http://188.121.110.43:9001/add", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
