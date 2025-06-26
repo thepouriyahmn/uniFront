@@ -26,7 +26,7 @@
 
        
 
-        let loginRequest = await fetch("http://188.121.110.43:9001/login", {
+        let loginRequest = await fetch("http://localhost:9001/login", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -59,14 +59,14 @@ let roles = decodedPayload.role.map(Number);
 console.log("User roles:", roles);
 
 if (roles.includes(1)) {
-    window.location.href = "http://188.121.110.43:9000/home";
+    window.location.href = "http://localhost:9000/home";
 } else if (roles.includes(2)) {
     alert("you are logged in")
-    window.location.href = "http://188.121.110.43:9000";
+    window.location.href = "http://localhost:9000";
 
 } else if (roles.includes(3)) {
     alert("you are logged in")
-    window.location.href = "http://188.121.110.43:9000";
+    window.location.href = "http://localhost:9000";
 } else {
     alert("تا زمان تایید شدن توسط ادمین صبر کنید...");
 }

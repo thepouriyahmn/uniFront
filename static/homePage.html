@@ -10,11 +10,11 @@
     <button id="button1" onclick=vaildation()></button>
     <h1>welcome to the University website!</h1>
 <br><br>
-<a href="http://188.121.110.43:9000/home" style="color: purple; text-decoration: none;">پنل ادمین</a>
+<a href="http://localhost:9000/home" style="color: purple; text-decoration: none;">پنل ادمین</a>
 <br>
-<a href="http://188.121.110.43:9000/daneshjo" style="color: purple; text-decoration: none;">انتخاب واحد دانشجو</a>
+<a href="http://localhost:9000/daneshjo" style="color: purple; text-decoration: none;">انتخاب واحد دانشجو</a>
 <br>
-<a href="http://188.121.110.43:9000/professor" style="color: purple; text-decoration: none;">ورود استاد</a>
+<a href="http://localhost:9000/professor" style="color: purple; text-decoration: none;">ورود استاد</a>
 </body>
 <script>
     window.onload = function load() {
@@ -33,10 +33,10 @@
         if (token!==undefined) {
              document.cookie = "token=; Max-Age=0; path=/"
              alert("شما از حساب خود خارح شدید")
-             window.location.href = "http://188.121.110.43:9000"
+             window.location.href = "http://localhost:9000"
              return
         } 
-      window.location.href = "http://188.121.110.43:9000/loginPage"
+      window.location.href = "http://localhost:9000/loginPage"
   
 
     }

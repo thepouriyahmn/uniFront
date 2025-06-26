@@ -60,7 +60,7 @@
         console.log(data.username, "username"
             , data.role
         )
-        let giveData = await fetch("http://188.121.110.43:9001/signup" , {
+        let giveData = await fetch("http://localhost:9001/signup" , {
             method: "POST", 
             headers: {
             'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ else if(giveData.status === 400){
     alert("از رمز قوی تر استفاده کنید");
 } else if (giveData.ok) {
     alert("Signup successful!");
-    window.location.href = "http://188.121.110.43:9000/loginPage";
+    window.location.href = "http://localhost:9000/loginPage";
 } else {
     alert("Unexpected error: " + giveData.status);
 }

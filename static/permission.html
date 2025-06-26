@@ -123,7 +123,7 @@ if (isNaN(unitValue)) {
         lessonUnit :unitValue
         }
         let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-        let postData = await fetch("http://188.121.110.43:9001/insertLesson",{
+        let postData = await fetch("http://localhost:9001/insertLesson",{
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -133,14 +133,14 @@ if (isNaN(unitValue)) {
         })
         if (!postData.ok){
     if (postData.status===401) {
-        window.location.href = "http://188.121.110.43:9000/unauthorized"
+        window.location.href = "http://localhost:9000/unauthorized"
     alert("Redirecting to login in 5 seconds...");
     setTimeout(function () {
-    window.location.href = "http://188.121.110.43:9000/login";
+    window.location.href = "http://localhost:9000/login";
 }, 5000); // ۵۰۰۰ میلی‌ثانیه = ۵ ثانیه
 } else {
     alert("something wenr wrong")
-     window.location.href = "http://188.121.110.43:9000"
+     window.location.href = "http://localhost:9000"
 }
         }
 
@@ -155,7 +155,7 @@ if (isNaN(unitValue)) {
         table.innerHTML=""
         let searchAllUsers = document.getElementById("searchAllUsers").value
         let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-let getData = await fetch("http://188.121.110.43:9001/showAll", {
+let getData = await fetch("http://localhost:9001/showAll", {
     method: "POST",
 headers: {
     'Content-Type': 'application/json',
@@ -167,12 +167,12 @@ headers: {
 if (!getData.ok){
     if (getData.status===401) {
         
-    window.location.href = "http://188.121.110.43:9000/unauthorized"
+    window.location.href = "http://localhost:9000/unauthorized"
     alert("لطفا ابتدا وارد شوید");
     
 } else {
     alert("something went wrong")
-     window.location.href = "http://188.121.110.43:9000"
+     window.location.href = "http://localhost:9000"
 }
 }
 
@@ -183,7 +183,7 @@ console.log("recived professors: ", response)
 response.forEach(item => addrows(item,"myTable"));
 
 
-let getLesson = await fetch("http://188.121.110.43:9001/showLesson", {
+let getLesson = await fetch("http://localhost:9001/showLesson", {
 headers: {
                 "Authorization": `Bearer ${token}`
             }
@@ -194,11 +194,11 @@ if (!getLesson.ok){
         window.location.href = "http://localhost:9000/unauthorized"
     alert("Redirecting to login in 5 seconds...");
     setTimeout(function () {
-    window.location.href = "http://188.121.110.43:9000/loginPage";
+    window.location.href = "http://localhost:9000/loginPage";
 }, 5000); // ۵۰۰۰ میلی‌ثانیه = ۵ ثانیه
 } else {
     alert("something went wrong")
-     window.location.href = "http://188.121.110.43:9000"
+     window.location.href = "http://localhost:9000"
 }
 }
 
@@ -216,7 +216,7 @@ let isTableLoaded = false
 async function uploadData() {
  let   userSearch = document.getElementById("userSearch").value
     let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-    let response = await fetch("http://188.121.110.43:9001/showUserRoled",{
+    let response = await fetch("http://localhost:9001/showUserRoled",{
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
@@ -227,7 +227,7 @@ async function uploadData() {
     )
     if (response.status === 401) {
         alert("دسترسی ندارید! لطفاً وارد شوید.");
-        window.location.href = "http://188.121.110.43:9000";
+        window.location.href = "http://localhost:9000";
         return;
     }
 
@@ -296,7 +296,7 @@ function addrows(param,tag) {
     addButtonStudent.onclick = async function () {
         console.log(param.id)
         let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-        let add = await fetch("http://188.121.110.43:9001/addStudent", {
+        let add = await fetch("http://localhost:9001/addStudent", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -307,7 +307,7 @@ function addrows(param,tag) {
 
         if (add.status === 401) {
             alert("access denied, please login");
-            window.location.href = "http://188.121.110.43:9000";
+            window.location.href = "http://localhost:9000";
             return;
         }
         if (!add.ok) {
@@ -320,7 +320,7 @@ function addrows(param,tag) {
     addButtonProfessor.onclick = async function () {
         console.log(param.id)
         let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-        let add = await fetch("http://188.121.110.43:9001/addProfessor", {
+        let add = await fetch("http://localhost:9001/addProfessor", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -331,7 +331,7 @@ function addrows(param,tag) {
 console.log("is ",param.name)
         if (add.status === 401) {
             alert("access denied, please login");
-            window.location.href = "http://188.121.110.43:9000";
+            window.location.href = "http://localhost:9000";
             return;
         }
         if (!add.ok) {
@@ -364,7 +364,7 @@ console.log("is ",param.name)
     deletedButton.onclick = async function () {
 console.log(param.id)
         let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-        let deleted = await fetch("http://188.121.110.43:9001/delProfessor", {
+        let deleted = await fetch("http://localhost:9001/delProfessor", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -375,12 +375,12 @@ console.log(param.id)
 
         if (deleted.status === 401) {
             alert("access denied, please login");
-            window.location.href = "http://188.121.110.43:9000";
+            window.location.href = "http://localhost:9000";
             return;
         }
         if (!deleted.ok) {
             alert("something went wrong!");
-            window.location.href = "http://188.121.110.43:9000";
+            window.location.href = "http://localhost:9000";
             return;
         }
         table.deleteRow(newRow.rowIndex -1);
@@ -396,7 +396,7 @@ console.log(param.id)
     deletedButton.onclick = async function () {
 console.log(param.id)
         let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-        let deleted = await fetch("http://188.121.110.43:9001/delLesson", {
+        let deleted = await fetch("http://localhost:9001/delLesson", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -407,12 +407,12 @@ console.log(param.id)
 
         if (deleted.status === 401) {
             alert("access denied, please login");
-            window.location.href = "http://188.121.110.43:9000";
+            window.location.href = "http://localhost:9000";
             return;
         }
         if (!deleted.ok) {
             alert("something went wrong!");
-            window.location.href = "http://188.121.110.43:9000";
+            window.location.href = "http://localhost:9000";
             return;
         }
         table.deleteRow(newRow.rowIndex -1);

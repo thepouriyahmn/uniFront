@@ -47,7 +47,7 @@ window.onload = function(){
 }
 async function onloaded(){
     let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-let getData = await fetch("http://188.121.110.43:9001/showUnits", {
+let getData = await fetch("http://localhost:9001/showUnits", {
 headers: {
                 "Authorization": `Bearer ${token}`
             }
@@ -57,10 +57,10 @@ console.log(getData.status, "is status")
 if (!getData.ok){
     if (getData.status===401) {
         alert("دسترسی ندارید لطفا ابتدا وارد شوید")
-    window.location.href = "http://188.121.110.43:9000/unauthorized"
+    window.location.href = "http://localhost:9000/unauthorized"
 } else {
     alert("شما دانشجو نیستید")
-     window.location.href = "http://188.121.110.43:9000/forbidden"
+     window.location.href = "http://localhost:9000/forbidden"
 }
 
 
@@ -93,7 +93,7 @@ let isTableLoaded = false
 
 async function uploadData() {
     let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-    let response = await fetch("http://188.121.110.43:9001/pickedUnits",{
+    let response = await fetch("http://localhost:9001/pickedUnits",{
         headers: {
             "Authorization": `Bearer ${token}`
         }
@@ -101,13 +101,13 @@ async function uploadData() {
     )
     if (response.status === 401) {
         alert("دسترسی ندارید! لطفاً وارد شوید.");
-        window.location.href = "http://188.121.110.43:9000/unauthorized";
+        window.location.href = "http://localhost:9000/unauthorized";
         return;
     }
 
     if (!response.ok) {
         alert("خطایی رخ داده");
-        window.location.href = "http://188.121.110.43:9000";
+        window.location.href = "http://localhost:9000";
         return;
     }
     let res = await response.json();
@@ -186,7 +186,7 @@ function addrows(param,tag) {
     addButton.onclick = async function () {
 
         let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-        let del = await fetch("http://188.121.110.43:9001/delStudentUnit", {
+        let del = await fetch("http://localhost:9001/delStudentUnit", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -197,12 +197,12 @@ function addrows(param,tag) {
 
         if (del.status === 401) {
             alert("access denied, please login");
-            window.location.href = "http://188.121.110.43:9000";
+            window.location.href = "http://localhost:9000";
             return;
         }
         if (!del.ok) {
             alert("something went wrong!");
-            window.location.href = "http://188.121.110.43:9000";
+            window.location.href = "http://localhost:9000";
             return;
         }
         table.deleteRow(newRow.rowIndex -1);
@@ -218,7 +218,7 @@ function addrows(param,tag) {
         console.log(param.id)
         let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
         console.log("cicd check")
-        let add = await fetch("http://188.121.110.43:9001/add", {
+        let add = await fetch("http://localhost:9001/add", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -229,12 +229,12 @@ function addrows(param,tag) {
 
         if (add.status === 401) {
             alert("access denied, please login");
-            window.location.href = "http://188.121.110.43:9000";
+            window.location.href = "http://localhost:9000";
             return;
         }
         if (!add.ok) {
             alert("something went wrong!");
-            window.location.href = "http://188.121.110.43:9000";
+            window.location.href = "http://localhost:9000";
             return;
         }
     };

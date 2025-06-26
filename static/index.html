@@ -42,7 +42,7 @@
 </body>
 <script>
 function go() {
-    window.location.href = "http://188.121.110.43:9000/permission"
+    window.location.href = "http://localhost:9000/permission"
 }
 // window.onload = function () {
 //     checkToken();
@@ -88,7 +88,7 @@ function go() {
 
     async function onloaded() {
         let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-        let getData = await fetch("http://188.121.110.43:9001/showProfessors",{
+        let getData = await fetch("http://localhost:9001/showProfessors",{
             headers: {
                  "Authorization": `Bearer ${token}`
             }
@@ -96,20 +96,20 @@ function go() {
         if (!getData.ok){
     if (getData.status===401) {
         
-    window.location.href = "http://188.121.110.43:9000/unauthorized"
+    window.location.href = "http://localhost:9000/unauthorized"
     alert("ابتدا وارد شوید");
   
 
 } else {
     alert("something went wrong")
-     window.location.href = "http://188.121.110.43:9000"
+     window.location.href = "http://localhost:9000"
 }
 }
 
         
         let res = await getData.json();
         res.forEach(r=>{dropDown(r,"professorDropdown")})
-        let getLesson = await fetch("http://188.121.110.43:9001/showLesson",{
+        let getLesson = await fetch("http://localhost:9001/showLesson",{
             headers: {
                  "Authorization": `Bearer ${token}`
             }
@@ -159,7 +159,7 @@ function go() {
 async function submit() {
 try{
     let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-    let response = await fetch("http://188.121.110.43:9001/submit", {
+    let response = await fetch("http://localhost:9001/submit", {
         method: 'POST', 
         headers: {
             'Content-Type': 'application/json' ,
@@ -170,10 +170,10 @@ try{
     if (!response.ok){
     if (response.status===401) {
         alert("زمان شما منقضی شده است لطفا دوباره وارد شوید")
-    window.location.href = "http://188.121.110.43:9000"
+    window.location.href = "http://localhost:9000"
 } else {
     alert("something went wrong")
-     window.location.href = "http://188.121.110.43:9000"
+     window.location.href = "http://localhost:9000"
 }
     }
     let result = await response.json()
@@ -209,7 +209,7 @@ submit()
 let isTableLoaded = false
 async function uploadData() {
     let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-    let response = await fetch("http://188.121.110.43:9001/show",{
+    let response = await fetch("http://localhost:9001/show",{
         headers: {
             "Authorization": `Bearer ${token}`
         }
@@ -217,7 +217,7 @@ async function uploadData() {
     )
     if (response.status === 401) {
         alert("زمان شما منقضی شده است لطفاً وارد شوید.");
-        window.location.href = "http://188.121.110.43:9000";
+        window.location.href = "http://localhost:9000";
         return;
     }
 
@@ -275,7 +275,7 @@ function addrows(param){
             deleteButton.onclick = async function  (){
                 table.deleteRow(newRow.rowIndex -1);
                 let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
-let deleter = await fetch("http://188.121.110.43:9001/delete",{
+let deleter = await fetch("http://localhost:9001/delete",{
     method : "POST",
     headers: {
             'Content-Type': 'application/json' ,
@@ -291,12 +291,12 @@ let deleter = await fetch("http://188.121.110.43:9001/delete",{
 )
 if(deleter.status===401){
     alert("access denied, please login")
-    window.location.href = "http://188.121.110.43:9000";
+    window.location.href = "http://localhost:9000";
     return
 }
 if (!deleter.ok){
     alert("someting went wrong!")
-    window.location.href = "http://188.121.110.43:9000";
+    window.location.href = "http://localhost:9000";
     return
 }
        
