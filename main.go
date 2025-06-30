@@ -6,6 +6,15 @@ import (
 )
 
 func main() {
+	// fs := http.FileServer(http.Dir("static"))
+	// http.Handle("/static/", http.StripPrefix("/static/", fs))
+	http.HandleFunc("/js/signUp.js", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "js/signUp.js")
+	})
+
+	http.HandleFunc("/js/protocol.js", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "js/protocol.js")
+	})
 	http.HandleFunc("/loginPage", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "static/login.html")
 	})
@@ -53,6 +62,13 @@ func main() {
 	http.HandleFunc("/static/css/permission.css", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "static/css/permission.css")
 	})
+	// http.HandleFunc("/static/js/protocol.js", func(w http.ResponseWriter, r *http.Request) {
+	// 	http.ServeFile(w, r, "static/js/protocol.js")
+	// })
+	// http.HandleFunc("/static/js/signUp.js", func(w http.ResponseWriter, r *http.Request) {
+	// 	http.ServeFile(w, r, "/static/js/.js")
+	// })
+
 	fmt.Println("test")
 	err := http.ListenAndServe(":9000", nil)
 	if err != nil {

@@ -44,56 +44,8 @@
 
 
 
-    <button onclick=signUp()>sign up</button>
+    <button onclick= signUp()>sign up</button>
 </body>
-<script>
-    async function signUp() {
-        const studentSelected = document.getElementById("studentCheckbox").checked;
-        const professorSelected = document.getElementById("professorCheckbox").checked;
-      let data={
-            username: document.getElementById("username").value,
-            password: document.getElementById("password").value,
-            studentRole: studentSelected,
-            professorRole:  professorSelected
-        }
-
-        console.log(data.username, "username"
-            , data.role
-        )
-        let giveData = await fetch("http://localhost:9001/signup" , {
-            method: "POST", 
-            headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-            
-        })
-        const regex = /^[a-zA-Z0-9]{6,}$/;
-      
-        if(!regex.test(data.password)){
-            alert("از رمز قوی تر استفاده کنید");
-            return
-        }
-        // if (giveData.ok){
-        // window.location.href = "http://localhost:9000";
-        // } else {
-        //     let errorText = await response.text(); // مثلا "Username already exists"
-        //     alert("Signup failed: " + errorText);
-        // }
-        if (giveData.status === 409) {
-    let errorText = await giveData.text();
-    alert("Signup failed: " + errorText);
-}
-else if(giveData.status === 400){
-    alert("از رمز قوی تر استفاده کنید");
-} else if (giveData.ok) {
-    alert("Signup successful!");
-    window.location.href = "http://localhost:9000/loginPage";
-} else {
-    alert("Unexpected error: " + giveData.status);
-}
-        
-
-    }
-</script>
+<script src="/js/protocol.js"></script>
+<script src="/js/signUp.js"></script>
 </html>
