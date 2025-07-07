@@ -155,6 +155,7 @@ if (isNaN(unitValue)) {
         table.innerHTML=""
         let searchAllUsers = document.getElementById("searchAllUsers").value
         let token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1];
+        console.log("got into")
 let getData = await fetch("http://localhost:9001/showAll", {
     method: "POST",
 headers: {
@@ -164,6 +165,7 @@ headers: {
             body: JSON.stringify(searchAllUsers)
         }
 )
+console.log("got out")
 if (!getData.ok){
     if (getData.status===401) {
         

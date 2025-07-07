@@ -9,15 +9,17 @@
     <form id="loginForm">
         <input type="text" id="username" placeholder="Username">
         <input type="password" id="password" placeholder="Password">
-        <button type="submit">Login</button>
+        <button type="button" onclick=login()>Login</button>
         <button type="button" onclick="window.location.href='/signUp'">Sign Up</button>
     </form>
 
 </body>
+<script src="/js/protocol.js"></script>
 <script>
   
-  document.getElementById("loginForm").addEventListener("submit", async function(event) {
-        event.preventDefault(); 
+async function login() {
+    
+
 
         let data = {
             username: document.getElementById("username").value,
@@ -26,17 +28,15 @@
 
        
 
-        let loginRequest = await fetch("http://localhost:9001/login", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
+   const loginRequest = await adapter.login(data)
+   
+   
+   console.log(loginRequest)
         if (!loginRequest.ok) { 
    
     if (loginRequest.status === 401) {
         alert("wrong username or password");
+        return
     } else {
         alert("تا زمان تایید شدن توسط ادمین صبر کنید...");
     }
@@ -45,10 +45,16 @@
 } 
 
 let result = await loginRequest.json();
-console.log("token: ", result.token);
-document.cookie = `token=${result.token}; max-age=300; path=/;`;
 
-let payload = result.token.split('.')[1];
+
+
+
+console.log("token: ", result.message);
+
+
+document.cookie = `token=${result.message}; max-age=300; path=/;`;
+
+let payload = result.message.split('.')[1];
 let decodedPayload = JSON.parse(atob(payload));
 console.log("Decoded Payload:", decodedPayload);
 
@@ -71,6 +77,7 @@ if (roles.includes(1)) {
     alert("تا زمان تایید شدن توسط ادمین صبر کنید...");
 }
     
-    });
+    };
+
 </script>
 </html>
